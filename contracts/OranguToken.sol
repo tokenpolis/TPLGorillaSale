@@ -12,7 +12,7 @@ contract OranguToken is CappedToken {
   string  public constant name            = "Crip.token(test)"; //remove "(test)" in production
   string  public constant symbol          = "CRI";
   uint8   public constant decimals        = 18;
-  uint256 public constant max_supply      = 50000000 * 10**18;//50ml and 18 decimals
+  uint256 public constant max_supply      = 1040000000 * 10**18;//50ml and 18 decimals
 
   function OranguToken() CappedToken(max_supply) public  {} 
 
