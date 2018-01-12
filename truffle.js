@@ -4,17 +4,17 @@
 var provider, address;
 
 //for ropsten
-var providerURL = 'https://ropsten.infura.io/keyhere';
+var providerURL = 'https://ropsten.infura.io/apikey';
 
 //for mainnet
-//var providerURL = 'https://mainnet.infura.io/ROeiriNDGwCQC0OOochi';
+//var providerURL = 'https://mainnet.infura.io/apikey';
 
 var HDWalletProvider = require('truffle-hdwallet-provider');
 // todo: Think about more secure way
-var mnemonic = "to be or not to be that is the question";
+var mnemonic = "to be or not to be that is the question forgot the";
 // use mnemonic of wallet
 
-provider = new HDWalletProvider(mnemonic, providerURL, 1);
+provider = new HDWalletProvider(mnemonic, providerURL, 0);
 address = "0x" + provider.wallet.getAddress().toString("hex");
 console.log('Provider address', provider.getAddress());
 console.log('Deploying to ', providerURL);
@@ -22,6 +22,13 @@ console.log('Deploying to ', providerURL);
 
 
 module.exports = {
+   solc: {
+    optimizer: {
+      enabled: true,
+      runs: 200
+    }
+  },
+
   networks: {
     development: {
       host: "localhost",
@@ -40,7 +47,7 @@ module.exports = {
     port: 8545,
     network_id: 1, // Ethereum network
     // optional config values:
-    gas: 4700000,
+    gas: 3000000,// CHECK GAS USED BY TESTRPC
     gasPrice: 1000000000,
     // from - default address to use for any transaction Truffle makes during migrations
     // provider - web3 provider instance Truffle should use to talk to the Ethereum network.
@@ -53,8 +60,8 @@ module.exports = {
 
     network_id: 3,// Ethereum test network
     // optional config values:
-    gas: 4700000,//estimanted 4.5M for gas
-    gasPrice: 55000000000,//check gasPrice in etherscan
+    gas: 3000000,//estimanted 3M for gas CHECK GAS USED BY TESTRPC
+    gasPrice: 46000000000,//check gasPrice in etherscan
 
     // from - default address to use for any transaction Truffle makes during migrations
     from: address,

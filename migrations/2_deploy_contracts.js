@@ -16,17 +16,23 @@ module.exports = function(deployer,network,accounts) {
   console.log("network  is:"+network);
   console.log("deployer is:"+deployer);
   console.log("*******************************************************");
+  
+
 
   //set starttime 10m in the future
-  //change this with actual time
-  const startTime = web3.eth.getBlock(web3.eth.blockNumber).timestamp + 600; 
+
+  //let startTime = await web3.eth.getBlock(web3.eth.blockNumber).timestamp;
+  //startTime +=600; 
+
+
+  const startTime = 1515718385 + 600;  //change this with actual time
   console.log("starttime is:"+startTime);
   
   // Set endtime Sunday, 8 April 2018 23:59:59
   //const endTime = 1523231999; 
 
   //testing endtime is starttime plus 1 weeks
-  const endtime = starttime + 7 * 86400;
+  const endTime = startTime + 7 * 86400;
   console.log("endTime is:"+endTime);
 
 
