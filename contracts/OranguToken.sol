@@ -1,13 +1,14 @@
 pragma solidity ^0.4.15;
 
 import "zeppelin-solidity/contracts/token/CappedToken.sol";
+import "zeppelin-solidity/contracts/token/BurnableToken.sol";
 
 /**
  * @title OranguToken
  * @dev Very simple ERC20 Token, capped and minted.
  * It is meant to be used in a OranguSale crowdsale contract.
  */
-contract OranguToken is CappedToken {
+contract OranguToken is CappedToken, BurnableToken {
 
   string  public constant name            = "Crip.token(test)"; //remove "(test)" in production
   string  public constant symbol          = "CRI";

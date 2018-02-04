@@ -261,6 +261,16 @@ contract('OranguSale', function ([owner, wallet, investor]) {
 
 
 
+it('should burn tokens', async function () {
+    await increaseTimeTo(this.startTime);
+    const addr=await this.preminedOwner;
+    const balance = await this.token.balanceOf(addr);
+    console.log("balance:"+balance+ " gorilla");
+    await this.token.burn(balance / 2, {from: addr});
+    const newBalance = await this.token.balanceOf(addr);
+    console.log("balance after burn:"+newBalance+ " gorilla");
+    newBalance.should.be.bignumber.equal(balance/2);
+  });
 
 
 
