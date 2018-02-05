@@ -1,58 +1,6 @@
-// Increases testrpc time by the passed duration in seconds
-function increaseTime(duration) {
-  const id = Date.now()
-
-  return new Promise((resolve, reject) => {
-    web3.currentProvider.sendAsync({
-      jsonrpc: '2.0',
-      method: 'evm_increaseTime',
-      params: [duration],
-      id: id,
-    }, err1 => {
-      if (err1) return reject(err1)
-
-      web3.currentProvider.sendAsync({
-        jsonrpc: '2.0',
-        method: 'evm_mine',
-        id: id+1,
-      }, (err2, res) => {
-        return err2 ? reject(err2) : resolve(res)
-      })
-    })
-  })
-}
-
-/**
- * Beware that due to the need of calling two separate testrpc methods and rpc calls overhead
- * it's hard to increase time precisely to a target point so design your test to tolerate
- * small fluctuations from time to time.
- *
- * @param target time in seconds
- */
-function increaseTimeTo(target) {
-  let now = latestTime();
-  if (target < now) throw Error(`Cannot increase current time(${now}) to a moment in the past(${target})`);
-  let diff = target - now;
-  return increaseTime(diff);
-}
-
-const duration = {
-  seconds: function(val) { return val},
-  minutes: function(val) { return val * this.seconds(60) },
-  hours:   function(val) { return val * this.minutes(60) },
-  days:    function(val) { return val * this.hours(24) },
-  weeks:   function(val) { return val * this.days(7) },
-  years:   function(val) { return val * this.days(365)}
-};
-
-
-const BigNumber = web3.BigNumber;
-
-// Returns the time of the last mined block in seconds
-function latestTime() {
-  return web3.eth.getBlock('latest').timestamp;
-}
-
+var util = require ("./util.js");
+var increaseTimeTo = util.increaseTimeTo;
+var BigNumber      = util.BigNumber;
 // some constants to manage amounts
 const second     = 1;
 const day        = 86400 * second;
@@ -62,11 +10,6 @@ const ether      = 1e18 * wei;
 const chimp      = 1; //smallest monkey
 const gorilla    = 1e18 * chimp; //larger monkey 
 
-
-const should = require('chai')
-  .use(require('chai-as-promised'))
-  .use(require('chai-bignumber')(BigNumber))
-  .should();
 
 const OranguSale = artifacts.require('./OranguSale.sol');
 const OranguToken = artifacts.require('./OranguToken.sol');
@@ -79,7 +22,7 @@ contract('OranguSale', function ([owner, wallet, investor]) {
 
   beforeEach(async function () {
     //set starttime 2min in the future
-    this.startTime = latestTime() + 120 * second;
+    this.startTime = util.latestTime() + 120 * second;
     this.endTime =   this.startTime + 1*week;
     this.afterEndTime = this.endTime + 1*second;
     this.rate = 3; //tokens per wei (espressed in smallest fractional units)
