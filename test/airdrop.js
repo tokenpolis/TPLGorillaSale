@@ -20,6 +20,7 @@ contract('Airdrop', function ([owner, other]) {
     console.log("token at:"+this.token.address);
     this.airdrop    = await Airdrop.new(this.token.address);
     console.log("airdrop at:"+this.airdrop.address);
+
     await this.token.mint(this.airdrop.address, 3.14 * 10**18);
   });
 
@@ -29,6 +30,21 @@ contract('Airdrop', function ([owner, other]) {
     this.token.should.exist;
     this.airdrop.should.exist;
     (await this.token.balanceOf(this.airdrop.address)).should.be.bignumber.equal(3.14 * 10**18);
+
+
+  });
+
+  it('should launch airdrop', async function () {
+    
+    var recipients = ["0x01","0x02","0x03"];
+    var balances   = [10, 27, 314];
+    await this.airdrop.setRecipientsAndBalances(recipients,balances).should.be.fulfilled;
+    await this.airdrop.doAirdrop().should.be.fulfilled;
+
+    (await this.token.balanceOf(recipients[0])).should.be.bignumber.equal(balances[0]);
+    (await this.token.balanceOf(recipients[1])).should.be.bignumber.equal(balances[1]);
+    (await this.token.balanceOf(recipients[2])).should.be.bignumber.equal(balances[2]);
+
 
   });
 
