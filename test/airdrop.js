@@ -34,13 +34,27 @@ contract('Airdrop', function ([owner, other]) {
 
   });
 
-  it('should launch airdrop', async function () {
+  it('launch airdrop before setting recipients must fail', async function () {
     
     var recipients = ["0x01","0x02","0x03"];
     var balances   = [10, 27, 314];
-    await this.airdrop.setRecipientsAndBalances(recipients,balances).should.be.fulfilled;
-    await this.airdrop.doAirdrop().should.be.fulfilled;
+    (await this.airdrop.ready()).should.be.equal(false);
+    await this.airdrop.doAirdrop().should.be.rejected;
+    
 
+  });
+
+
+   it('should launch airdrop', async function () {
+    
+    var recipients = ["0x01","0x02","0x03"];
+    var balances   = [10, 27, 314];
+    (await this.airdrop.ready()).should.be.equal(false);
+    await this.airdrop.setRecipientsAndBalances(recipients,balances).should.be.fulfilled;
+    (await this.airdrop.ready()).should.be.equal(true);
+    await this.airdrop.doAirdrop().should.be.fulfilled;
+    (await this.airdrop.ready()).should.be.equal(false);
+    
     (await this.token.balanceOf(recipients[0])).should.be.bignumber.equal(balances[0]);
     (await this.token.balanceOf(recipients[1])).should.be.bignumber.equal(balances[1]);
     (await this.token.balanceOf(recipients[2])).should.be.bignumber.equal(balances[2]);
@@ -87,27 +101,60 @@ contract('Airdrop', function ([owner, other]) {
   });
 
 
+
+
   it('should do massive airdrop to cause gas issues', async function () {
     
+    //an empty array
     var a = [];
-
+    
+    //generate 100 integers and push in a
     for (i=100;i<200;i++) a.push(i);
-    // pass a function to map
+
+    //generate 100 0x addresses appending the integers
     const addr = a.map(x => "0x0000000000000000000000000000000000000" + x );
 
     console.log(addr);
 
+    //generate an array of balances all equal to 1000
     let balances = addr.map(x => 1000);
     console.log(balances);    
 
-
+    //call the airdrop contract to set the recipients and balances
     await this.airdrop.setRecipientsAndBalances(addr,balances).should.be.fulfilled;
 
-    await this.airdrop.doAirdrop({from:other}).should.be.rejected;
+    //call the airdrop to finally airdrop
     let result = await this.airdrop.doAirdrop();
+
+    //write gas on the console
     console.log("gasUsed:"+result.receipt.gasUsed);
 
   });
 
+
+
+  it('the airdrop should stop after 3 users', async function () {
+    
+    let addr     = ["0x0000000000000000000000000000000000000001",
+                    "0x0000000000000000000000000000000000000002",
+                    "0x0000000000000000000000000000000000000003",
+                    "0x0000000000000000000000000000000000000004"];
+
+    let balances = [1*ether,1*ether,1*ether,1*ether];
+
+    await this.airdrop.setRecipientsAndBalances(addr,balances).should.be.fulfilled;
+
+
+    await this.airdrop.doAirdrop().should.be.fulfilled;
+
+    (await this.airdrop.counter()).should.be.bignumber.equal(3);
+
+    let remainder = await this.token.balanceOf(this.airdrop.address);
+    console.log(remainder+"");
+
+
+
+
+  });
 
 });
