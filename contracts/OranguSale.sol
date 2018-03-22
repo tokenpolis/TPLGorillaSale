@@ -44,6 +44,10 @@ contract OranguSale is CappedCrowdsale,Ownable, Pausable {
       MINRATE = _minrate;
       require( _rate >= MINRATE);
       require( _rate <= MAXRATE);
+
+      //uncomment and write testcase
+      //require(_preminedOwner != 0x0);
+      
       token.mint(_preminedOwner,_premined);
   }
 
