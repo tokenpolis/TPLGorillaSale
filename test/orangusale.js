@@ -178,12 +178,20 @@ contract('OranguSale', function ([owner, wallet, investor]) {
     await increaseTimeTo(this.startTime);
     const totalSupply = await this.token.totalSupply();
     const max_supply = await this.token.max_supply();
-    console.log("totalSupply:"+(totalSupply / gorilla)+" gorilla(s)");
-    console.log("maxSupply:"+(max_supply / gorilla)+" gorilla(s)");
+    console.log("totalSupply:"+(totalSupply.div(gorilla))+" gorilla(s)");
+    console.log("maxSupply:"+(max_supply.div(gorilla))+" gorilla(s)");
 
     //take Token ownership to invoke mint(...)
     await this.crowdsale.takeTokenContractOwnership({from: owner});
-    await this.token.mint(owner,max_supply - totalSupply).should.be.fulfilled;
+
+    console.log("**************");
+    console.log(max_supply);
+    console.log(totalSupply);
+    console.log(max_supply.minus(totalSupply));
+    console.log("**************");
+
+    await this.token.mint(owner,max_supply.minus(totalSupply)).should.be.fulfilled;
+
     (await this.token.balanceOf(owner)).should.be.bignumber.equal(max_supply);
     await this.token.mint(owner,1).should.be.rejected;
 
