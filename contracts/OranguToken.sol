@@ -10,10 +10,10 @@ import "zeppelin-solidity/contracts/token/BurnableToken.sol";
  */
 contract OranguToken is CappedToken, BurnableToken {
 
-  string  public constant name            = "Crip.token(test)"; //remove "(test)" in production
-  string  public constant symbol          = "CRI";
+  string  public constant name            = "Use your Name"; //remove "(test)" in production
+  string  public constant symbol          = "$£€";
   uint8   public constant decimals        = 18;
-  uint256 public constant max_supply      = 1040000000 * 10**18;//50ml and 18 decimals
+  uint256 public constant max_supply      = 21000000 * 10**18;//21mo and 18 decimals
 
   function OranguToken() CappedToken(max_supply) public  {} 
 
